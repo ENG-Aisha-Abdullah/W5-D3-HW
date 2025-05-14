@@ -19,13 +19,15 @@ submitButton.addEventListener("click", async (e) => {
 
 async function createUser(user) {
   try {
-    const checkUser = await fetch(`${apiUrl}/login?username=${user.username}`);
-    const existingUsers = await checkUser.json();
-
-     if (existingUsers.length > 0) {
+    const checkUser = await fetch(`${apiUrl}/login`);
+    const allUsers = await checkUser.json();
+    const existingUser = allUsers.find(u => u.username === user.username);
+    
+    if (existingUser) {
       alert("اسم المستخدم موجود");
       return;
     }
+    
   
     // post create user
     const response = await fetch(`${apiUrl}/login`, {
@@ -37,10 +39,12 @@ async function createUser(user) {
     });
 
     const data = await response.json();
+    localStorage.setItem("user", JSON.stringify(data));
     console.log("تم التسجيل", data);
     alert("تم التسجيل بنجاح");
     window.location.href = "/login.html";
+
   } catch (error) {
-    console.log("error regster", error);
+    console.log("error register", error);
   }
 }
